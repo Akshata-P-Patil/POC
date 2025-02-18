@@ -1,0 +1,30 @@
+.file-upload-download {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-container,
+.download-container {
+    margin: 20px;
+    text-align: center;
+}
+  
+.upload-container button,
+.download-container button
+{
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background: teal;
+    color: white;
+}
+  
+.upload-container div,
+.download-container div {
+    margin-top: 10px;
+    font-size: 14px;
+    color: green;
+    text-align: center;
+}
