@@ -22,21 +22,39 @@
 
 
 <div class="file-upload-download" >
-  <div class="upload-container">
+  <div class="uploadSw-container">
     <!-- Upload Button -->
-    <button (click)="fileInput.click()">Upload</button>
+    <button (click)="fileInput.click()">Upload SW</button>
     <!-- Hidden File Input -->
     <input 
       type="file" 
+      accept=".sw"
       #fileInput 
       style="display: none;" 
-      (change)="onFileSelected($event)" />
+      (change)="onSwFileSelected($event)" />
     <!-- Display the selected file name -->
-    <div *ngIf="selectedFileName">
-      <p>Selected File: {{ selectedFileName }}</p>
+    <div >
+      <p *ngIf="selectedSwFileName">Selected File: {{ selectedSwFileName }}</p>
       <!-- Conditional rendering of the text -->
-      <p *ngIf="selectedFileName">Uploaded successfully!</p>
+      <p *ngIf="selectedSwFileName">Uploaded successfully!</p>
+      <p *ngIf="uploadError" class="upload-error">failed to upload, only png format file allowed</p>
     </div>
+  </div>
+  <div class="uploadS19-container">
+      <!-- Upload Button -->
+      <button (click)="S19fileInput.click()">Upload S19</button>
+      <!-- Hidden File Input -->
+      <input 
+        type="file" 
+        #S19fileInput
+        style="display: none;" 
+        (change)="onS19FileSelected($event)" />
+      <!-- Display the selected file name -->
+      <div *ngIf="selectedS19FileName">
+        <p>Selected File: {{ selectedS19FileName }}</p>
+        <!-- Conditional rendering of the text -->
+        <p *ngIf="selectedS19FileName">S19 File Uploaded successfully!</p>
+      </div>
   </div>
   
   <div class="download-container">

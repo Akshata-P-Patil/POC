@@ -5,13 +5,15 @@
     justify-content: center;
 }
 
-.upload-container,
+.uploadSw-container,
+.uploadS19-container,
 .download-container {
     margin: 20px;
     text-align: center;
 }
   
-.upload-container button,
+.uploadSw-container button,
+.uploadS19-container button,
 .download-container button
 {
     padding: 10px 20px;
@@ -19,12 +21,18 @@
     cursor: pointer;
     background: teal;
     color: white;
+    margin-bottom: 18px;
 }
   
-.upload-container div,
+.uploadSw-container div,    
+.uploadS19-container div,
 .download-container div {
     margin-top: 10px;
     font-size: 14px;
     color: green;
     text-align: center;
+}
+
+.uploadSw-container .upload-error{
+    color: red;
 }
