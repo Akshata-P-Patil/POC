@@ -1,48 +1,44 @@
 package com.saft.pack_generator.controller;
 import com.saft.pack_generator.apiresponse.SuccessMsgResponse;
-import com.saft.pack_generator.exception.FileStorageException;
-import com.saft.pack_generator.service.FileUploadService;
+import com.saft.pack_generator.filepaths.FilePath;
+import com.saft.pack_generator.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+
 
 @RestController
 @RequestMapping("/api")
 public class FileStorageController {
 
-    private static final String UPLOAD_SWU_FILE = "C:/ProgramData/CubePackGenerator/uploadFile.swu";
-
-@Autowired
-private FileUploadService fileUploadService;
-
-//    @PostMapping("/uploadSwuData")
-//    public ResponseEntity<SuccessMsgResponse> uploadSwuReq(@RequestBody byte[] fileContent) {
-//        SuccessMsgResponse response = this.fileUploadService.uploadSwuFile(fileContent);
-//        return ResponseEntity.ok(response);
-//    }
+    @Autowired
+    private FileStorageService fileStorageService;
 
     @PostMapping("/uploadSwuData")
     public ResponseEntity<SuccessMsgResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-        SuccessMsgResponse response =    this.fileUploadService.uploadSwuFile(file);
+        SuccessMsgResponse response = this.fileStorageService.uploadSwuFile(file);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/uploadS19Data")
-    public ResponseEntity<SuccessMsgResponse> uploadS19Req(@RequestBody byte[] fileContent) {
-        SuccessMsgResponse response = this.fileUploadService.uploadS19File(fileContent);
+    public ResponseEntity<SuccessMsgResponse> uploadS19Req(@RequestParam("file") MultipartFile file) {
+        SuccessMsgResponse response = this.fileStorageService.uploadS19File(file);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> downloadFile() {
-        return this.fileUploadService.downloadFile();
+    public ResponseEntity<?> downloadFile() {
+        // Delegate the download logic to the service
+        return this.fileStorageService.downloadFile();
     }
+
+    @GetMapping("/generateZip")
+    public ResponseEntity<byte[]> generateZip() {
+        return this.fileStorageService.generateZipResponse();
+    }
+
 }

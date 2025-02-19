@@ -1,26 +1,28 @@
 package com.saft.pack_generator.utils;
 
+import com.saft.pack_generator.exception.FileStorageException;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
 public class FileUtils {
 
-    // Utility method to create a file and ensure its directory exists
-    public static File createFileIfNotExists(String filePath, byte[] fileContent) throws IOException {
-        File destinationFile = new File(filePath);
-
-        // Ensure the parent directory exists
-        if (!destinationFile.getParentFile().exists()) {
-            destinationFile.getParentFile().mkdirs();
+    public static void validateAndEnsureUploadDirectory(MultipartFile file, String uploadDirPath) throws IOException {
+        // Check if the file is empty
+        if (file.isEmpty()) {
+            throw new FileStorageException("Cannot upload an empty file.");
         }
-        // Create the file if it does not exist
-        if (!destinationFile.exists()) {
-            destinationFile.createNewFile();
+        // Ensure the upload directory exists
+        File uploadDir = new File(uploadDirPath);
+        if (!uploadDir.exists()) {
+            boolean created = uploadDir.mkdirs(); // Create directories if not exist
+            if (!created) {
+                throw new FileStorageException("Failed to create upload directory.");
+            }
         }
-        Files.write(destinationFile.toPath(), fileContent, StandardOpenOption.TRUNCATE_EXISTING);
-        return destinationFile;
     }
-
 }
