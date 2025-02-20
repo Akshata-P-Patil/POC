@@ -51,7 +51,7 @@ public class FileStorageService {
 
     public ResponseEntity<Resource> downloadFile() {
         try {
-            String UPLOAD_SWU_FILE = FilePath.UPLOAD_SWU_FILE.getPath();
+            String UPLOAD_SWU_FILE = FilePath.SWU_FILE.getPath();
             // Define the path of the file to be downloaded
             Path filePath = Paths.get(UPLOAD_SWU_FILE);
             Resource resource = new UrlResource(filePath.toUri());
