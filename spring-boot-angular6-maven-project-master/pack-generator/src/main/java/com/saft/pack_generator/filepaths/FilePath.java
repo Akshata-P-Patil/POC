@@ -7,7 +7,7 @@ public enum FilePath {
     S19_FILE("C:/ProgramData/CubePackGenerator/uploadFile.s19"),
     UPLOAD_SWU_FILE("C:/ProgramData/CubePackGenerator/"),
     UPLOAD_S19_FILE("C:/ProgramData/CubePackGenerator/"),
-    ZIP_FILE_PATH("C:/ProgramData/CubePackGenerator/files.zip");
+    ZIP_FILE_PATH("C:/ProgramData/CubePackGenerator/generateFile.zip");
 
     private final String path;
 

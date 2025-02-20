@@ -75,13 +75,10 @@ public class FileStorageService {
     public ResponseEntity<byte[]> generateZipResponse() {
         String swuFilePath = FilePath.SWU_FILE.getPath();
         String s19FilePath = FilePath.S19_FILE.getPath();
-
         byte[] zipBytes = generateZip(swuFilePath, s19FilePath);
-
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
         headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
-
         return new ResponseEntity<>(zipBytes, headers, HttpStatus.OK);
     }
 
@@ -101,18 +98,14 @@ public class FileStorageService {
     private void zipFiles(String zipFilePath, String... files) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(zipFilePath);
              ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-
             for (String filePath : files) {
                 File fileToZip = new File(filePath);
                 if (!fileToZip.exists()) {
-                    System.out.println("File not found: " + filePath);
-                    continue; // Skip missing files
+                    continue;
                 }
-
                 try (FileInputStream fis = new FileInputStream(fileToZip)) {
                     ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
                     zipOut.putNextEntry(zipEntry);
-
                     byte[] buffer = new byte[1024];
                     int length;
                     while ((length = fis.read(buffer)) >= 0) {
