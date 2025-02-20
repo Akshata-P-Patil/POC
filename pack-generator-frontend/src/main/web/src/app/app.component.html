@@ -1,6 +1,9 @@
 
 <div class="file-upload-download" >
+  <h1>Package Generator</h1>
+ <div class="parent-container">
   <div class="container">
+    <h4 class="click-header">Click here to upload Sw file</h4>
     <!-- Upload Button -->
     <button (click)="fileInput.click()">Upload SW</button>
     <!-- Hidden File Input -->
@@ -10,13 +13,14 @@
       #fileInput 
       style="display: none;" 
       (change)="onSwFileSelected($event)" />
-    <div >
+    <div>
       <!-- Conditional rendering of the text -->
       <p *ngIf="swuploadSuccess">{{uploadSwFileMessage}}</p>
       <p *ngIf="!swuploadSuccess && swuploadAttempted" class="upload-error">{{uploadSwFileMessage}}</p>
     </div>
   </div>
   <div class="container">
+      <h4 class="click-header">Click here to upload S19 file</h4>
       <!-- Upload Button -->
       <button (click)="S19fileInput.click()" >Upload S19</button>
       <!-- Hidden File Input -->
@@ -32,8 +36,11 @@
         <p *ngIf="!s19uploadSuccess && s19uploadAttempted" class="upload-error">{{uploadS19FileMessage}}</p>
       </div>
   </div>
+ </div>
   
+<div class="parent-container">
   <div class="container">
+    <h4 class="click-header">Click here to download file</h4>
     <button (click)="downloadFile()">Download</button>
   <!-- Conditional rendering of the text -->
    <div>
@@ -43,6 +50,7 @@
   </div>
 
   <div class="container">
+    <h4 class="click-header">Click here to generate zip file</h4>
     <button (click)="generateZipFile()">Generate Zip</button>
   <!-- Conditional rendering of the text -->
    <div>
@@ -50,5 +58,6 @@
     <p *ngIf="!generateSuccess && ZipAttempted" class="upload-error">{{zipMessage}}</p>
    </div>
   </div>
+</div>
 
 </div>

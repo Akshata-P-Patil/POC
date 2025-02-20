@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UploadService } from '../service/upload.service';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -48,7 +49,7 @@ export class AppComponent{
           error: (error) => {
             this.swuploadAttempted = true;
             this.swuploadSuccess = false;
-            this.uploadSwFileMessage = error;
+            this.uploadSwFileMessage = "Error in uploading file";
             console.error('Error uploading file', error);
           }
         });
@@ -97,23 +98,34 @@ export class AppComponent{
       }
   }
 
-
   downloadFile() {
-        this.uploadService.downloadFile().subscribe({
-          next: (response) => {
-           this.downloadSuccess = true;
-           this.downloadAttempted = true;
-           this.downloadMessage = "downloaded successfully"
-            console.log('download successful', response);
-          },
-          error: (error) => {
-            this.downloadSuccess = false;
-            this.downloadAttempted = true;
-            this.downloadMessage =  "Error in downloading, file not found";
-            console.error('Error in downloading file', error);
-          }
-        });
+    this.uploadService.downloadFile().subscribe(
+      (response: Blob) => {
+        // Create a new URL for the Blob
+        const blob = new Blob([response]);
+        const url = window.URL.createObjectURL(blob);
+
+        // Create a temporary anchor element to trigger the download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'uploadFile.swu'; 
+        a.click(); // Programmatically click the anchor to trigger the download
+
+        // Clean up the URL object after download
+        window.URL.revokeObjectURL(url);
+        this.downloadSuccess = true;
+        this.downloadAttempted = true;
+        this.downloadMessage = "downloaded successfully"
+        console.log('download successful', response);
+      },
+      (error) => {
+        this.downloadSuccess = false;
+                  this.downloadAttempted = true;
+                  this.downloadMessage =  "Error in downloading, file not found";
+                  console.log('Error in downloading file');
       }
+    );
+  }
 
 
       generateZipFile() {

@@ -30,11 +30,12 @@ export class UploadService {
     }
 
     //This method downloads file (.swu file)
-    downloadFile():Observable<HttpResponse<any>> {
-      return this.http.get<HttpResponse<any>>(this.downloadApiUrl, {
-        observe: 'response'
+    downloadFile(): Observable<Blob> {
+      return this.http.get(this.downloadApiUrl, {
+        responseType: 'blob'  // This ensures we get the file as a Blob
       });
     }
+  
 
     //This method generates zip file
     generateZipFile(): Observable<HttpResponse<Blob>> {

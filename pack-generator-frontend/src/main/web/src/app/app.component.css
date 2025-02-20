@@ -1,3 +1,5 @@
+
+
 .file-upload-download {
     display: flex;
     flex-direction: column;
@@ -8,7 +10,9 @@
 
 .container{
     margin: 20px;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
   
 .container button
@@ -18,7 +22,7 @@
     cursor: pointer;
     background: teal;
     color: white;
-    margin-bottom: 18px;
+    margin-bottom: 5px;
 }
   
 
@@ -32,3 +36,19 @@
 .upload-error{
     color: red;
 }
+
+h1{
+    color: crimson;
+}
+
+h4{
+    margin-right: 10px;
+}
+
+.parent-container{
+    display: flex;
+    flex-direction: row;
+    border: solid 1px black;
+    margin-bottom: 20px;
+}
+
