@@ -1,48 +1,24 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<!-- <div style="text-align:center">
-  <button btnclick="generateZip()">Generate Zip</button>
-  <title *ngIf="zipDone">{{title}}</title>
-</div> -->
-
-
-<!-- <h2>Here are some links to help you start: </h2> -->
-<!-- <ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul> -->
-
-
-
 
 <div class="file-upload-download" >
-  <div class="uploadSw-container">
+  <div class="container">
     <!-- Upload Button -->
     <button (click)="fileInput.click()">Upload SW</button>
     <!-- Hidden File Input -->
     <input 
       type="file" 
-      accept=".sw"
+      accept=".swu"
       #fileInput 
       style="display: none;" 
       (change)="onSwFileSelected($event)" />
-    <!-- Display the selected file name -->
     <div >
-      <p *ngIf="selectedSwFileName">Selected File: {{ selectedSwFileName }}</p>
       <!-- Conditional rendering of the text -->
-      <p *ngIf="selectedSwFileName">Uploaded successfully!</p>
-      <p *ngIf="uploadError" class="upload-error">failed to upload, only png format file allowed</p>
+      <p *ngIf="swuploadSuccess">{{uploadSwFileMessage}}</p>
+      <p *ngIf="!swuploadSuccess && swuploadAttempted" class="upload-error">{{uploadSwFileMessage}}</p>
     </div>
   </div>
-  <div class="uploadS19-container">
+  <div class="container">
       <!-- Upload Button -->
-      <button (click)="S19fileInput.click()">Upload S19</button>
+      <button (click)="S19fileInput.click()" >Upload S19</button>
       <!-- Hidden File Input -->
       <input 
         type="file" 
@@ -50,18 +26,28 @@
         style="display: none;" 
         (change)="onS19FileSelected($event)" />
       <!-- Display the selected file name -->
-      <div *ngIf="selectedS19FileName">
-        <p>Selected File: {{ selectedS19FileName }}</p>
+      <div>
         <!-- Conditional rendering of the text -->
-        <p *ngIf="selectedS19FileName">S19 File Uploaded successfully!</p>
+        <p *ngIf="s19uploadSuccess">{{uploadS19FileMessage}}</p>
+        <p *ngIf="!s19uploadSuccess && s19uploadAttempted" class="upload-error">{{uploadS19FileMessage}}</p>
       </div>
   </div>
   
-  <div class="download-container">
-    <button (click)="download()">Download</button>
+  <div class="container">
+    <button (click)="downloadFile()">Download</button>
   <!-- Conditional rendering of the text -->
-   <div *ngIf="downloaded">
-     <p >Downloaded successfully</p>
+   <div>
+    <p *ngIf="downloadSuccess">{{downloadMessage}}</p>
+    <p *ngIf="!downloadSuccess && downloadAttempted" class="upload-error">{{downloadMessage}}</p>
+   </div>
+  </div>
+
+  <div class="container">
+    <button (click)="generateZipFile()">Generate Zip</button>
+  <!-- Conditional rendering of the text -->
+   <div>
+    <p *ngIf="generateSuccess">{{zipMessage}}</p>
+    <p *ngIf="!generateSuccess && ZipAttempted" class="upload-error">{{zipMessage}}</p>
    </div>
   </div>
 
