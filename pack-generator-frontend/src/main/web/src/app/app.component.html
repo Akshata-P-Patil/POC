@@ -1,0 +1,54 @@
+
+<div class="file-upload-download" >
+  <div class="container">
+    <!-- Upload Button -->
+    <button (click)="fileInput.click()">Upload SW</button>
+    <!-- Hidden File Input -->
+    <input 
+      type="file" 
+      accept=".swu"
+      #fileInput 
+      style="display: none;" 
+      (change)="onSwFileSelected($event)" />
+    <div >
+      <!-- Conditional rendering of the text -->
+      <p *ngIf="swuploadSuccess">{{uploadSwFileMessage}}</p>
+      <p *ngIf="!swuploadSuccess && swuploadAttempted" class="upload-error">{{uploadSwFileMessage}}</p>
+    </div>
+  </div>
+  <div class="container">
+      <!-- Upload Button -->
+      <button (click)="S19fileInput.click()" >Upload S19</button>
+      <!-- Hidden File Input -->
+      <input 
+        type="file" 
+        #S19fileInput
+        style="display: none;" 
+        (change)="onS19FileSelected($event)" />
+      <!-- Display the selected file name -->
+      <div>
+        <!-- Conditional rendering of the text -->
+        <p *ngIf="s19uploadSuccess">{{uploadS19FileMessage}}</p>
+        <p *ngIf="!s19uploadSuccess && s19uploadAttempted" class="upload-error">{{uploadS19FileMessage}}</p>
+      </div>
+  </div>
+  
+  <div class="container">
+    <button (click)="downloadFile()">Download</button>
+  <!-- Conditional rendering of the text -->
+   <div>
+    <p *ngIf="downloadSuccess">{{downloadMessage}}</p>
+    <p *ngIf="!downloadSuccess && downloadAttempted" class="upload-error">{{downloadMessage}}</p>
+   </div>
+  </div>
+
+  <div class="container">
+    <button (click)="generateZipFile()">Generate Zip</button>
+  <!-- Conditional rendering of the text -->
+   <div>
+    <p *ngIf="generateSuccess">{{zipMessage}}</p>
+    <p *ngIf="!generateSuccess && ZipAttempted" class="upload-error">{{zipMessage}}</p>
+   </div>
+  </div>
+
+</div>
