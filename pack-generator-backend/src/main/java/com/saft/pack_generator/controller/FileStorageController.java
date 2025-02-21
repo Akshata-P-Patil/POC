@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Set;
 
 
 @RestController
@@ -40,5 +41,17 @@ public class FileStorageController {
     public ResponseEntity<byte[]> generateZip() {
         return this.fileStorageService.generateZipResponse();
     }
+
+    @GetMapping("/getList")
+    public ResponseEntity<Set<String>> getFileList() {
+        return this.fileStorageService.getFileList();
+    }
+
+    @GetMapping("/downloadAuditLog")
+    public ResponseEntity<?> downloadFile(String fileName) {
+        // Delegate the download logic to the service
+        return this.fileStorageService.downloadAuditLogFile(fileName);
+    }
+
 
 }
