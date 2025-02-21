@@ -40,22 +40,21 @@
   
 <div class="parent-container">
   <div class="container">
-    <h4 class="click-header">Click here to download file</h4>
-    <button (click)="downloadFile()">Download</button>
-  <!-- Conditional rendering of the text -->
-   <div>
-    <p *ngIf="downloadSuccess">{{downloadMessage}}</p>
-    <p *ngIf="!downloadSuccess && downloadAttempted" class="upload-error">{{downloadMessage}}</p>
-   </div>
-  </div>
-
-  <div class="container">
     <h4 class="click-header">Click here to generate zip file</h4>
     <button (click)="generateZipFile()">Generate Zip</button>
   <!-- Conditional rendering of the text -->
    <div>
     <p *ngIf="generateSuccess">{{zipMessage}}</p>
     <p *ngIf="!generateSuccess && ZipAttempted" class="upload-error">{{zipMessage}}</p>
+   </div>
+  </div>
+  <div class="container">
+    <h4 class="click-header">Click here to download file</h4>
+    <button (click)="downloadFile()">Download</button>
+  <!-- Conditional rendering of the text -->
+   <div>
+    <p *ngIf="downloadSuccess">{{downloadMessage}}</p>
+    <p *ngIf="!downloadSuccess && downloadAttempted" class="upload-error">{{downloadMessage}}</p>
    </div>
   </div>
 </div>
