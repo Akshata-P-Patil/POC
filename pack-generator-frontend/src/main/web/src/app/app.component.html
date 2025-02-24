@@ -1,62 +1,14 @@
+<!-- <div>App</div> -->
+<router-outlet></router-outlet>
 
-<div class="file-upload-download" >
-  <h1>Package Generator</h1>
- <div class="parent-container">
-  <div class="container">
-    <h4 class="click-header">Click here to upload Sw file</h4>
-    <!-- Upload Button -->
-    <button (click)="fileInput.click()">Upload SW</button>
-    <!-- Hidden File Input -->
-    <input 
-      type="file" 
-      accept=".swu"
-      #fileInput 
-      style="display: none;" 
-      (change)="onSwFileSelected($event)" />
-    <div>
-      <!-- Conditional rendering of the text -->
-      <p *ngIf="swuploadSuccess">{{uploadSwFileMessage}}</p>
-      <p *ngIf="!swuploadSuccess && swuploadAttempted" class="upload-error">{{uploadSwFileMessage}}</p>
+<div class="container" *ngIf="welcomePage">
+    <h1>Welcome to Package Generator and LogFiles POC</h1>
+    <h2>Click here for more:</h2>
+    
+    <div class="poc-buttons">
+        <button class="btn" (click)="packageGenerator()">Package Generator</button>
+        <button class="btn" (click)="logFiles()">View LogFiles</button>
     </div>
-  </div>
-  <div class="container">
-      <h4 class="click-header">Click here to upload S19 file</h4>
-      <!-- Upload Button -->
-      <button (click)="S19fileInput.click()" >Upload S19</button>
-      <!-- Hidden File Input -->
-      <input 
-        type="file" 
-        #S19fileInput
-        style="display: none;" 
-        (change)="onS19FileSelected($event)" />
-      <!-- Display the selected file name -->
-      <div>
-        <!-- Conditional rendering of the text -->
-        <p *ngIf="s19uploadSuccess">{{uploadS19FileMessage}}</p>
-        <p *ngIf="!s19uploadSuccess && s19uploadAttempted" class="upload-error">{{uploadS19FileMessage}}</p>
-      </div>
-  </div>
- </div>
-  
-<div class="parent-container">
-  <div class="container">
-    <h4 class="click-header">Click here to generate zip file</h4>
-    <button (click)="generateZipFile()">Generate Zip</button>
-  <!-- Conditional rendering of the text -->
-   <div>
-    <p *ngIf="generateSuccess">{{zipMessage}}</p>
-    <p *ngIf="!generateSuccess && ZipAttempted" class="upload-error">{{zipMessage}}</p>
-   </div>
-  </div>
-  <div class="container">
-    <h4 class="click-header">Click here to download file</h4>
-    <button (click)="downloadFile()">Download</button>
-  <!-- Conditional rendering of the text -->
-   <div>
-    <p *ngIf="downloadSuccess">{{downloadMessage}}</p>
-    <p *ngIf="!downloadSuccess && downloadAttempted" class="upload-error">{{downloadMessage}}</p>
-   </div>
-  </div>
 </div>
 
-</div>
+<!-- <app-packgenerator *ngIf="packGen"></app-packgenerator> -->

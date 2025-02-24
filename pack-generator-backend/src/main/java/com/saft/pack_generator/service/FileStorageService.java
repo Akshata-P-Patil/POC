@@ -122,7 +122,7 @@ public class FileStorageService {
     }
 
     public ResponseEntity<Set<String>> getFileList() {
-        String UPLOAD_S19_FILE = "/data/logs";
+        String UPLOAD_S19_FILE = "C:/ProgramData/CubePackGenerator/";
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
         return new ResponseEntity<Set<String>>(Stream.of(new File(UPLOAD_S19_FILE).listFiles()).filter(file -> !file.isDirectory()).map(File::getName)
@@ -131,7 +131,7 @@ public class FileStorageService {
 
     public ResponseEntity<Resource> downloadAuditLogFile(String fileName) {
         try {
-            String AUDIT_LOG_FILE = "/data/logs/"+fileName;        // Define the path of the file to be downloaded
+            String AUDIT_LOG_FILE = "C:/ProgramData/CubePackGenerator/"+fileName;        // Define the path of the file to be downloaded
             Path filePath = Paths.get(AUDIT_LOG_FILE);
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists() && resource.isReadable()) {

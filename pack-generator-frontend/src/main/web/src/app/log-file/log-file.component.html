@@ -1,0 +1,21 @@
+<div class="audit-log-container" >
+  <h1>Audit Log Files</h1>
+  <div class="container">
+    <table class="log-table">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Log file Name</th>
+          <th>Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of List; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item }}</td>
+          <td><button class="btn btn primary" (click)="downloadLogFile(item)">Download</button>{{log}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

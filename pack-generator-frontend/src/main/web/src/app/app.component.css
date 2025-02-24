@@ -1,54 +1,30 @@
-
-
-.file-upload-download {
+.container{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    h1, h2{
+        font-family:'Times New Roman', Times, serif;
+        color: rgba(229, 101, 15, 0.571);
+    }
 }
 
-
-.container{
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-  
-.container button
-{
-    padding: 10px 20px;
+.btn {
     font-size: 16px;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    background: teal;
+    transition: all 0.3s ease;
     color: white;
-    margin-bottom: 5px;
-}
-  
-
-.container div {
-    margin-top: 10px;
-    font-size: 14px;
-    color: green;
-    text-align: center;
+    background-color: rgb(225, 15, 54)
 }
 
-.upload-error{
-    color: red;
-}
-
-h1{
-    color: crimson;
-}
-
-h4{
-    margin-right: 10px;
-}
-
-.parent-container{
+.poc-buttons{
     display: flex;
     flex-direction: row;
-    border: solid 1px black;
-    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
 }
-

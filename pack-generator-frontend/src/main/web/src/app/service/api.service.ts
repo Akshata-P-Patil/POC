@@ -5,11 +5,13 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UploadService {
+export class ApiService {
   private swFileApiUrl = 'http://localhost:8080/api/uploadSwuData';
   private s19FileApiUrl = 'http://localhost:8080/api/uploadS19Data';
   private downloadApiUrl = 'http://localhost:8080/api/download';
   private zipApiUrl = 'http://localhost:8080/api/generateZip';
+  private LogFilesUrl = 'http://localhost:8080/api/getList';
+  private downloadLogUrl ='http://localhost:8080/api/downloadAuditLog?fileName=';
 
 
   constructor(private http: HttpClient) {}
@@ -44,6 +46,19 @@ export class UploadService {
         responseType: 'blob' as 'json' // Specify the response type as 'blob'
       });
     }
+
+    //This method fetches list of log files 
+    fetchLogFiles():Observable<Object>{
+      return this.http.get<any>(this.LogFilesUrl);
+    }
+
+    //download file based on log file name:
+    downloadLogFile(fileName: String): Observable<Blob> {
+      return this.http.get(this.downloadLogUrl + fileName, {
+        responseType: 'blob'  // This ensures we get the file as a Blob
+      });
+    }
+  
 }
 
 
