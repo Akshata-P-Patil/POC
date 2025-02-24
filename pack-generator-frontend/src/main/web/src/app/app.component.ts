@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit{
  public welcomePage: boolean = true;
+  packGenRoute: boolean;
+  logFileRoute: boolean;
   constructor(
     private router: Router,
   ) {}
@@ -17,12 +19,14 @@ export class AppComponent implements OnInit{
 
   packageGenerator(){
     this.welcomePage = false;
-    this.router.navigateByUrl('/pack-generator');
+    this.packGenRoute = true;
+    this.logFileRoute = false;
   }
 
   logFiles(){
     this.welcomePage = false;
-    this.router.navigateByUrl('/logfile')
+    this.packGenRoute = false;
+    this.logFileRoute = true;
   }
 
   checkRoutedUrl(){
