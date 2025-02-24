@@ -19,7 +19,6 @@ export class PackgeneratorComponent {
   generateSuccess: boolean;
   ZipAttempted: boolean;
   zipMessage: string;
-  Home: boolean;
 
   constructor(private apiService: ApiService) {}
 
@@ -144,9 +143,5 @@ export class PackgeneratorComponent {
             console.error('Error in generating zip file', error);
           }
         });
-      }
-
-      HomePage(){
-       this.Home = true;
       }
 }

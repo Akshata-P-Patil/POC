@@ -9,7 +9,6 @@ import { ApiService } from '../service/api.service';
 export class LogFileComponent implements OnInit{
   List: Object;
   log: string;
-  Home: boolean;
 
   constructor(private apiService: ApiService) { }
   ngOnInit(): void {
@@ -52,7 +51,4 @@ export class LogFileComponent implements OnInit{
     );
   }
 
-  HomePage(){
-    this.Home = true;
-   }
 }
