@@ -7,6 +7,16 @@
       <option name="url" value="https://repo.maven.apache.org/maven2" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="maven-group" />
+      <option name="name" value="maven-group" />
+      <option name="url" value="http://fr-cor-frg3.corporate.saft.org:8083/nexus/content/groups/maven-group/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://fr-cor-frg3.corporate.saft.org:8083/nexus/content/groups/maven-group/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
