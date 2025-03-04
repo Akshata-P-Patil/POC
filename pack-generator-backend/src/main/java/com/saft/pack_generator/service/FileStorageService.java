@@ -1,5 +1,4 @@
 package com.saft.pack_generator.service;
-import com.saft.pack_generator.Entity.FileData;
 import com.saft.pack_generator.apiresponse.SuccessMsgResponse;
 import com.saft.pack_generator.exception.FileStorageException;
 import com.saft.pack_generator.filepaths.FilePath;
@@ -7,24 +6,17 @@ import com.saft.pack_generator.utils.FileUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
 
 @Service
 public class FileStorageService {
@@ -33,13 +25,23 @@ public class FileStorageService {
             String UPLOAD_SWU_FILE = FilePath.UPLOAD_FILE.getPath();
             // Call the common utility method for validation and ensuring the upload directory
             FileUtils.validateAndEnsureUploadDirectory(file, UPLOAD_SWU_FILE);
-            // Create file path and save it
-            File destinationFile = new File(UPLOAD_SWU_FILE + "uploadFile.swu");
+            // Get the original filename and its extension
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || !originalFilename.contains(".")) {
+                return new SuccessMsgResponse(false, "Invalid file name!", null);
+            }
+            String extension = originalFilename.substring(originalFilename.lastIndexOf(".")); // Get file extension
+            String destinationPath = "";
+            if (extension.equalsIgnoreCase(".swu")) {
+                destinationPath = UPLOAD_SWU_FILE + originalFilename;
+            }
+            // Save the file
+            File destinationFile = new File(destinationPath);
             Files.copy(file.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return new SuccessMsgResponse(true, "SWU File uploaded successfully!", UPLOAD_SWU_FILE);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new FileStorageException("Failed to upload");
+            throw new FileStorageException("Failed to upload, check file extension or file should not empty" +e.getMessage(), e);
         }
     }
 
@@ -47,68 +49,41 @@ public class FileStorageService {
         try {
             String UPLOAD_S19_FILE = FilePath.UPLOAD_FILE.getPath();
             FileUtils.validateAndEnsureUploadDirectory(file, UPLOAD_S19_FILE);
-            // Create file path and save it
-            File destinationFile = new File(UPLOAD_S19_FILE + "uploadFile.s19");
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || !originalFilename.contains(".")) {
+                return new SuccessMsgResponse(false, "Invalid file name!", null);
+            }
+            String extension = originalFilename.substring(originalFilename.lastIndexOf(".")); // Get file extension
+            String destinationPath = "";
+            if (extension.equalsIgnoreCase(".s19")) {
+                destinationPath = UPLOAD_S19_FILE + originalFilename;
+            }
+            // Save the file
+            File destinationFile = new File(destinationPath);
             Files.copy(file.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return new SuccessMsgResponse(true, "S19 File uploaded successfully!", UPLOAD_S19_FILE);
         } catch (IOException e) {
-            throw new FileStorageException("Error saving file: " + e.getMessage(), e);
+            throw new FileStorageException("Failed to upload, check file extension or file should not empty" + e.getMessage(), e);
         }
     }
 
-    public ResponseEntity<byte[]> generateZipResponse()  {
-        String swuFilePath = FilePath.SWU_FILE.getPath();
-        String s19FilePath = FilePath.S19_FILE.getPath();
-        String metdataFilePath = FilePath.UPLOAD_FILE.getPath();
-        String metdataFileDataPath = FilePath.METADATA_FILE.getPath();
-
-        FileUtils.createMetadataFile(metdataFilePath, metdataFileDataPath);
-        // Prepare metadata content
-        List<FileData> fileData = Arrays.asList(
-                new FileData("uploadFile.swu", "32656523173djdj21y38"),
-                new FileData("uploadFile.s19", "32656523173djdj21y38")
-        );
-
-        // Write metadata JSON file
-        FileUtils.writeMetadataToFile(metdataFileDataPath, fileData);
-        byte[] zipBytes = generateZip(swuFilePath, s19FilePath, metdataFileDataPath);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=files.zip");
-        headers.add(HttpHeaders.CONTENT_TYPE, "application/zip");
-        return new ResponseEntity<>(zipBytes, headers, HttpStatus.OK);
-    }
-
-    public byte[] generateZip(String file1Path, String file2Path, String metdataFile) {
-        if (!Files.exists(Paths.get(file1Path)) || !Files.exists(Paths.get(file2Path)) || !Files.exists(Paths.get(metdataFile))) {
-            throw new FileStorageException("File not found: " + file1Path);
-        }
+    public ResponseEntity<byte[]> generateZipResponse() {
+        String zipSourceFolder = FilePath.UPLOAD_FILE.getPath(); // 📂 Folder containing files
+        String zipFilePath = FilePath.ZIP_FILE_PATH.getPath(); // 📂 Output ZIP path
         try {
-            String ZIP_FILE_PATH = FilePath.ZIP_FILE_PATH.getPath();
-            zipFiles(ZIP_FILE_PATH, file1Path, file2Path, metdataFile);
-            return Files.readAllBytes(Paths.get(ZIP_FILE_PATH)); // Read zip file as byte array
+           FileUtils.zipFiles(zipSourceFolder, zipFilePath);
+            byte[] zipFileBytes = Files.readAllBytes(Paths.get(zipFilePath));
+            // Set headers for file download
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.attachment().filename("generateFile.zip").build());
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(zipFileBytes);
         } catch (IOException e) {
-            throw new FileStorageException("Error generating ZIP file: " + e.getMessage(), e);
-        }
-    }
-
-    private void zipFiles(String zipFilePath, String... files) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(zipFilePath);
-             ZipOutputStream zipOut = new ZipOutputStream(fos)) {
-            for (String filePath : files) {
-                File fileToZip = new File(filePath);
-                if (!fileToZip.exists()) {
-                    continue;
-                }
-                try (FileInputStream fis = new FileInputStream(fileToZip)) {
-                    ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-                    zipOut.putNextEntry(zipEntry);
-                    byte[] buffer = new byte[1024];
-                    int length;
-                    while ((length = fis.read(buffer)) >= 0) {
-                        zipOut.write(buffer, 0, length);
-                    }
-                }
-            }
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(("Failed to create ZIP file: " + e.getMessage()).getBytes());
         }
     }
 
@@ -122,7 +97,7 @@ public class FileStorageService {
 
     public ResponseEntity<Resource> downloadAuditLogFile(String fileName) {
         try {
-            String AUDIT_LOG_FILE =  FilePath.UPLOAD_FILE.getPath() + fileName;        // Define the path of the file to be downloaded
+            String AUDIT_LOG_FILE = FilePath.UPLOAD_FILE.getPath() + fileName;        // Define the path of the file to be downloaded
             Path filePath = Paths.get(AUDIT_LOG_FILE);
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists() && resource.isReadable()) {
@@ -153,11 +128,10 @@ public class FileStorageService {
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + zipFile.getName())
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .body(resource);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             throw new FileStorageException("download failed");
         }
-
     }
 
 
