@@ -6,10 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private swFileApiUrl = 'http://localhost:8080/api/uploadSwuData';
-  private s19FileApiUrl = 'http://localhost:8080/api/uploadS19Data';
-  private downloadApiUrl = 'http://localhost:8080/api/download';
-  private zipApiUrl = 'http://localhost:8080/api/generateZip';
+  private swFileApiUrl = 'http://localhost:8080/pack-generator/uploadSwuFile';
+  private s19FileApiUrl = 'http://localhost:8080/pack-generator/uploadS19File';
+  private downloadApiUrl = 'http://localhost:8080/pack-generator/download';
+  private zipApiUrl = 'http://localhost:8080/pack-generator/generateZip';
   private LogFilesUrl = 'http://localhost:8080/api/getList';
   private downloadLogUrl ='http://localhost:8080/api/downloadAuditLog?fileName=';
 
