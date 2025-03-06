@@ -18,22 +18,20 @@ export class AppComponent implements OnInit{
   }
 
   packageGenerator(){
+    this.router.navigateByUrl("pack-generator");
     this.welcomePage = false;
-    this.packGenRoute = true;
-    this.logFileRoute = false;
   }
 
-  logFiles(){
-    this.welcomePage = false;
-    this.packGenRoute = false;
-    this.logFileRoute = true;
-  }
+  // logFiles(){
+  //   this.welcomePage = false;
+  //   this.packGenRoute = false;
+  //   this.logFileRoute = true;
+  // }
 
   checkRoutedUrl(){
     let currentURL = window.location.href;
-    if(currentURL.includes('pack-generator') ||currentURL.includes('logfile')){
+    if(currentURL.includes('pack-generator')){
       this.welcomePage = false;
     }
-
   }
   }

@@ -108,7 +108,7 @@ export class PackgeneratorComponent {
         // Create a temporary anchor element to trigger the download
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'uploadFile.swu'; 
+        a.download = 'generated.zip'; 
         a.click(); // Programmatically click the anchor to trigger the download
 
         // Clean up the URL object after download
