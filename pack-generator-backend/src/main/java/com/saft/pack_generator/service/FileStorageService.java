@@ -1,4 +1,5 @@
 package com.saft.pack_generator.service;
+
 import com.saft.pack_generator.apiresponse.SuccessMsgResponse;
 import com.saft.pack_generator.exception.FileStorageException;
 import com.saft.pack_generator.filepaths.FilePath;
@@ -7,13 +8,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
+import java.io.*;
 import java.nio.file.*;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,18 +32,16 @@ public class FileStorageService {
             if (originalFilename == null || !originalFilename.contains(".")) {
                 return new SuccessMsgResponse(false, "Invalid file name!", null);
             }
-            String extension = originalFilename.substring(originalFilename.lastIndexOf(".")); // Get file extension
-            String destinationPath = "";
-            if (extension.equalsIgnoreCase(".swu")) {
-                destinationPath = UPLOAD_SWU_FILE + originalFilename;
+            // Get file extension
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            if (!extension.equalsIgnoreCase(".swu")) {
+                return new SuccessMsgResponse(false, "Invalid file type! Only .swu files are allowed.", null);
             }
-            // Save the file
-            File destinationFile = new File(destinationPath);
-            Files.copy(file.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            FileUtils.writeFileForUpload(file, originalFilename);
             return new SuccessMsgResponse(true, "SWU File uploaded successfully!", UPLOAD_SWU_FILE);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new FileStorageException("Failed to upload, check file extension or file should not empty" +e.getMessage(), e);
+            throw new FileStorageException("Failed to upload. Check the file or ensure it is not empty: " + e.getMessage(), e);
         }
     }
 
@@ -54,36 +54,34 @@ public class FileStorageService {
                 return new SuccessMsgResponse(false, "Invalid file name!", null);
             }
             String extension = originalFilename.substring(originalFilename.lastIndexOf(".")); // Get file extension
-            String destinationPath = "";
-            if (extension.equalsIgnoreCase(".s19")) {
-                destinationPath = UPLOAD_S19_FILE + originalFilename;
+            if (!extension.equalsIgnoreCase(".s19")) {
+                return new SuccessMsgResponse(false, "Invalid file type! Only .s19 files are allowed.", null);
             }
-            // Save the file
-            File destinationFile = new File(destinationPath);
-            Files.copy(file.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            FileUtils.writeFileForUpload(file, originalFilename);
             return new SuccessMsgResponse(true, "S19 File uploaded successfully!", UPLOAD_S19_FILE);
         } catch (IOException e) {
             throw new FileStorageException("Failed to upload, check file extension or file should not empty" + e.getMessage(), e);
         }
     }
 
-    public ResponseEntity<byte[]> generateZipResponse() {
-        String zipSourceFolder = FilePath.UPLOAD_FILE.getPath(); // 📂 Folder containing files
-        String zipFilePath = FilePath.ZIP_FILE_PATH.getPath(); // 📂 Output ZIP path
+    public ResponseEntity<InputStreamResource> generateZipResponse() {
+        String zipSourceFolder = FilePath.UPLOAD_FILE.getPath();
+        String zipFilePath = FilePath.ZIP_FILE_PATH.getPath();
+        File zipFile = new File(zipFilePath);
         try {
-           FileUtils.zipFiles(zipSourceFolder, zipFilePath);
+            FileUtils.zipFiles(zipSourceFolder, zipFilePath);
             byte[] zipFileBytes = Files.readAllBytes(Paths.get(zipFilePath));
             // Set headers for file download
             HttpHeaders headers = new HttpHeaders();
             headers.setContentDisposition(ContentDisposition.attachment().filename("generateFile.zip").build());
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(zipFile));
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body(zipFileBytes);
+                    .contentLength(zipFile.length())
+                    .body(resource);
         } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(("Failed to create ZIP file: " + e.getMessage()).getBytes());
+          throw new FileStorageException("Zip Creation failed");
         }
     }
 
@@ -116,7 +114,7 @@ public class FileStorageService {
         }
     }
 
-    public ResponseEntity<Resource> downloadFile() {
+    public ResponseEntity<Resource> downloadZip() {
         try {
             String generateZipFile = FilePath.ZIP_FILE_PATH.getPath();
             File zipFile = new File(generateZipFile);
