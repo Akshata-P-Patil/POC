@@ -8,20 +8,21 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.*;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 @Service
 public class FileStorageService {
+    private static final String CUBE_AUDIT_PREFIX = "cube-audit";
     public SuccessMsgResponse uploadSwuFile(MultipartFile file) {
         try {
             String UPLOAD_SWU_FILE = FilePath.UPLOAD_FILE.getPath();
@@ -85,17 +86,43 @@ public class FileStorageService {
         }
     }
 
-    public ResponseEntity<Set<String>> getFileList() {
-        String UPLOAD_S19_FILE = FilePath.UPLOAD_FILE.getPath();
+//    public ResponseEntity<Set<String>> getFileList() {
+//        String UPLOAD_S19_FILE = FilePath.UPLOAD_FILE.getPath();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+//        return new ResponseEntity<Set<String>>(Stream.of(new File(UPLOAD_S19_FILE).listFiles()).filter(file -> !file.isDirectory()).map(File::getName)
+//                .collect(Collectors.toSet()), headers, HttpStatus.OK);
+//    }
+
+
+
+    public ResponseEntity<List<AuditLogFile>> getAuditLogsList() throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        return new ResponseEntity<Set<String>>(Stream.of(new File(UPLOAD_S19_FILE).listFiles()).filter(file -> !file.isDirectory()).map(File::getName)
-                .collect(Collectors.toSet()), headers, HttpStatus.OK);
+        try (Stream<Path> walk = Files.walk(Paths.get("/data/logs/"), 1)) {
+            return new ResponseEntity<List<AuditLogFile>>(walk
+                    .map(Path::toFile)
+                    .filter(File::isFile)
+                    .filter(file -> file.getName().startsWith(CUBE_AUDIT_PREFIX))
+                    .map(f -> new AuditLogFile(f.getName(), Instant.ofEpochMilli(f.lastModified()), f.length()))
+                    .sorted(Comparator.comparing(AuditLogFile::getLastModificationDate, Comparator.nullsLast(Comparator.reverseOrder())))
+                    .collect(Collectors.toList()), headers, HttpStatus.OK);
+        }
     }
+
+//    public ResponseEntity<Set<String>> getFileList() {
+//        String UPLOAD_S19_FILE = "/data/logs/";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+//        return new ResponseEntity<Set<String>>(Stream.of(new File(UPLOAD_S19_FILE).listFiles()).filter(file -> !file.isDirectory()).map(File::getName)
+//                .collect(Collectors.toSet()), headers, HttpStatus.OK);
+//    }
 
     public ResponseEntity<Resource> downloadAuditLogFile(String fileName) {
         try {
-            String AUDIT_LOG_FILE = FilePath.UPLOAD_FILE.getPath() + fileName;        // Define the path of the file to be downloaded
+
+            String AUDIT_LOG_FILE = "/data/logs/"+fileName;        // Define the path of the file to be downloaded
+//            String AUDIT_LOG_FILE = "C:\\ProgramData\\CubePackGenerator\\"+fileName;        // Define the path of the file to be downloaded
             Path filePath = Paths.get(AUDIT_LOG_FILE);
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists() && resource.isReadable()) {
@@ -111,8 +138,8 @@ public class FileStorageService {
         } catch (Exception e) {
             // Return 500 in case of any error
             return ResponseEntity.internalServerError().build();
-        }
-    }
+        }}
+
 
     public ResponseEntity<Resource> downloadZip() {
         try {
